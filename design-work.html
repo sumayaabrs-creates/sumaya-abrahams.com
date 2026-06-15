@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://use.typekit.net/mle8fvw.css">
+    <link rel="stylesheet" href="https://use.typekit.net/idn5jqf.css">
+  <link rel="stylesheet" href="https://use.typekit.net/mle8fvw.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sumaya Abrahams — Design Work</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #161616; --text: #ffffff; --muted: #bab6b6;
+      /* ===== ROW + THUMBNAIL SIZING (adjust these to taste) =====
+         --row-h  : height of each project row
+         --circle : diameter of the default circular thumbnail */
+      --row-h: 410px;
+      --circle: 545px;
+    }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: 'Barlow', sans-serif; overflow-x: hidden; }
+
+    /* ── NAV (same code as the rest of the site) ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; height: 56px;
+      display: flex; align-items: center; padding: 0 28px;
+      z-index: 100; border-bottom: 1px solid rgba(200,200,200,0.18);
+      background: var(--bg);
+    }
+    .nav-logo { display: flex; align-items: center; gap: 10px; font-size: 13px; letter-spacing: 0.12em; font-weight: 500; text-transform: uppercase; text-decoration: none; color: var(--text); }
+    .nav-logo-img-wrap { position: relative; width: 30px; height: 26px; flex-shrink: 0; }
+    .nav-logo-img-wrap img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; transition: opacity 0.25s; }
+    .logo-img-default { opacity: 1; }
+    .logo-img-hover { opacity: 0; }
+    .nav-logo:hover .logo-img-default { opacity: 0; }
+    .nav-logo:hover .logo-img-hover { opacity: 1; }
+    .nav-logo-img-wrap .logo-svg-fallback { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+    .nav-logo-img-wrap .logo-svg-fallback svg { width: 22px; height: 22px; }
+    .nav-links { position: absolute; left: 49%; transform: translateX(-50%); display: flex; gap: 40px; }
+    .nav-links a { font-size: 11px; letter-spacing: 0.18em; font-weight: 400; text-transform: uppercase; color: var(--text); text-decoration: none; opacity: 0.85; transition: opacity 0.2s; }
+    .nav-links a:hover { opacity: 1; }
+    .nav-social { margin-left: auto; display: flex; gap: 14px; align-items: center; }
+    .nav-social a { position: relative; display: block; width: 26px; height: 26px; flex-shrink: 0; opacity: 0.75; transition: opacity 0.2s; }
+    .nav-social a:hover { opacity: 1; }
+    .nav-social a img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; z-index: 1; }
+    .nav-social a .svg-fallback { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; z-index: 0; }
+    .nav-social a .svg-fallback svg { width: 17px; height: 17px; color: #ffffff; }
+
+    /* ── PAGE TITLE ── */
+    .dw-head { margin-top: 56px; padding: 56px 40px 40px; 
+    font-family: "waverly-cf", sans-serif;
+    font-weight: 500;
+    font-size: medium;
+    font-style: normal;}
+    .dw-title { font-size: clamp(16px, 4.6vw, 58px); font-weight: 300; text-transform: uppercase; letter-spacing: 0.01em; line-height: 1; }
+
+    /* ── PROJECT LIST ── */
+    .project-list { width: 100%; }
+
+    /* Each row is a full clickable card linking to its case study */
+    .project-row {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;   /* text  |  thumbnail */
+      min-height: var(--row-h);
+      border-top: 1px solid rgba(255, 255, 255, 0.45);
+      text-decoration: none;
+      color: var(--text);
+      position: relative;
+    }
+    .project-row:last-child { border-bottom: 1px solid rgba(255,255,255,0.45); }
+
+    .row-text {
+      padding: 38px 40px;
+      display: flex;
+      flex-direction: column;
+    }
+    .project-name { font-size: clamp(22px, 2.6vw, 30px); font-weight: 100; line-height: 1.1;
+    font-family: "redonda-condensed", sans-serif;
+font-weight: 300;
+font-style: normal; }
+    .project-sub { font-size: 15px; font-weight: 300; color: var(--muted); margin-top: 8px; }
+    .project-meta {
+      margin-top: auto;
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      font-weight: 400;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* ── THUMBNAIL: circle by default, square on hover ── */
+    .row-media { position: relative; overflow: hidden; }
+    .media-shape {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: var(--circle);
+      height: var(--circle);
+      border-radius: 50%;
+      object-fit: cover;
+      transition: width 0.55s cubic-bezier(0.4,0,0.2,1),
+                  height 0.55s cubic-bezier(0.4,0,0.2,1),
+                  border-radius 0.55s cubic-bezier(0.4,0,0.2,1);
+    }
+    /* Hover the thumbnail area → it grows to fill the right half and squares off.
+       Reverts to a circle when the cursor leaves. */
+    .row-media:hover .media-shape {
+      width: 100%;
+      height: 100%;
+      border-radius: 0;
+    }
+
+    /* checkered transparent placeholder (until a real image src is added) */
+    .ph {
+      background: repeating-conic-gradient(#dcdcdc 0% 25%, #f2f2f2 0% 50%) 0 0 / 40px 40px;
+      display: block;
+    }
+
+    @media (max-width: 720px) {
+      .project-row { grid-template-columns: 1fr; }
+      .row-media { min-height: 240px; }
+      :root { --circle: 340px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav>
+  <a href="landing-page.html" class="nav-logo">
+    <div class="nav-logo-img-wrap">
+      <img class="logo-img-default" src="star-logo/star-line.png" alt="logo">
+      <img class="logo-img-hover" src="star-logo/star-fill.png" alt="logo hover">
+      <span class="logo-svg-fallback">
+      </span>
+    </div>
+    Sumaya Abrahams
+  </a>
+  <div class="nav-links">
+    <a href="design-work.html">Design Work</a>
+    <a href="the-archive.html">The Archive</a>
+    <a href="#">About</a>
+  </div>
+  <div class="nav-social">
+    <a href="#" aria-label="Instagram" target="_blank" rel="noopener">
+      <span class="svg-fallback"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none"/></svg></span>
+    </a>
+    <a href="#" aria-label="LinkedIn" target="_blank" rel="noopener">
+      <span class="svg-fallback"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></span>
+    </a>
+  </div>
+</nav>
+
+<!-- ── PAGE TITLE ── -->
+<header class="dw-head">
+  <h1 class="dw-title">Design Work</h1>
+</header>
+
+<!-- ── PROJECT LIST ── -->
+<!-- NOTE: each row links to its case-study page via the href below.
+     Change the href to point at the right file for each project. -->
+<div class="project-list">
+
+  <!-- EVANESCENT → link to its case study page -->
+  <a class="project-row" href="evanescent-cs.html">
+    <div class="row-text">
+      <h2 class="project-name">Evanescent</h2>
+      <p class="project-sub">Surrealist Exhibition</p>
+      <div class="project-meta">
+        <p>Group Project</p>
+        <p>2026</p>
+      </div>
+    </div>
+    <div class="row-media">
+      <!-- replace src to set this project's thumbnail -->
+      <img class="media-shape ph" src="design-work-covers/evanescent.png" alt="Evanescent — replace with your own image">
+    </div>
+  </a>
+
+  <!-- SLEEPSTATE → link to its case study page (e.g. sleepstate.html) -->
+  <a class="project-row" href="#sleepstate">
+    <div class="row-text">
+      <h2 class="project-name">SleepState</h2>
+      <p class="project-sub">Data Visualisation App</p>
+      <div class="project-meta">
+        <p>Solo Project</p>
+        <p>2025</p>
+      </div>
+    </div>
+    <div class="row-media">
+      <img class="media-shape ph" src="design-work-covers/sleepstate.png" alt="SleepState — replace with your own image">
+    </div>
+  </a>
+
+  <!-- MYTRACK → link to its case study page (e.g. mytrack.html) -->
+  <a class="project-row" href="#mytrack">
+    <div class="row-text">
+      <h2 class="project-name">MyTrack</h2>
+      <p class="project-sub">Digital Signage App</p>
+      <div class="project-meta">
+        <p>Solo Project</p>
+        <p>2024</p>
+      </div>
+    </div>
+    <div class="row-media">
+      <img class="media-shape ph" src="design-work-covers/mytrack.png" alt="MyTrack — replace with your own image">
+    </div>
+  </a>
+
+</div>
+
+</body>
+</html>

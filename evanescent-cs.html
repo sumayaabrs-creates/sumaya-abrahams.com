@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" href="https://use.typekit.net/mle8fvw.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sumaya — Evanescent</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --bg: #161616; --text: #ffffff; --muted: #bab6b6; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: 'Barlow', sans-serif; overflow-x: hidden; }
+ 
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; height: 56px;
+      display: flex; align-items: center; padding: 0 28px;
+      z-index: 100; border-bottom: 1px solid rgba(200,200,200,0.18);
+      background: var(--bg);
+    }
+    .nav-logo { display: flex; align-items: center; gap: 10px; font-size: 13px; letter-spacing: 0.12em; font-weight: 500; text-transform: uppercase; text-decoration: none; color: var(--text); }
+    .nav-logo-img-wrap { position: relative; width: 30px; height: 26px; flex-shrink: 0; }
+    .nav-logo-img-wrap img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; transition: opacity 0.25s; }
+    .logo-img-default { opacity: 1; }
+    .logo-img-hover { opacity: 0; }
+    .nav-logo:hover .logo-img-default { opacity: 0; }
+    .nav-logo:hover .logo-img-hover { opacity: 1; }
+    .nav-logo-img-wrap .logo-svg-fallback { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+    .nav-logo-img-wrap .logo-svg-fallback svg { width: 22px; height: 22px; }
+    .nav-links { position: absolute; left: 49%; transform: translateX(-50%); display: flex; gap: 40px; }
+    .nav-links a { font-size: 11px; letter-spacing: 0.18em; font-weight: 400; text-transform: uppercase; color: var(--text); text-decoration: none; opacity: 0.85; transition: opacity 0.2s; }
+    .nav-links a:hover { opacity: 1; }
+    .nav-social { margin-left: auto; display: flex; gap: 14px; align-items: center; }
+    .nav-social a { position: relative; display: block; width: 26px; height: 26px; flex-shrink: 0; opacity: 0.75; transition: opacity 0.2s; }
+    .nav-social a:hover { opacity: 1; }
+    .nav-social a img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; z-index: 1; }
+    .nav-social a .svg-fallback { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; z-index: 0; }
+    .nav-social a .svg-fallback svg { width: 17px; height: 17px; color: #ffffff; }
+
+    /* ── HERO BANNER IMAGE ── */
+    .hero-banner {
+      margin-top: 56px;
+      width: 100%;
+      aspect-ratio: 16 / 5;
+      background: repeating-conic-gradient(#e8e8e8 0% 25%, #d8d8d8 0% 50%) 0 0 / 40px 40px;
+    }
+
+    /* ── HERO TEXT BLOCK ── */
+    .hero-text {
+      padding: 80px 48px 80px;
+      display: grid;
+      grid-template-columns: 1fr auto auto auto;
+      gap: 0 48px;
+      align-items: start;
+    }
+    .hero-desc {
+      font-size: 18px;
+      font-weight: 300;
+      line-height: 1.65;
+      padding-top: 20px;
+      padding-bottom: 30px;
+      color: var(--text);
+      max-width: 800px;
+      grid-column: 1;
+    }
+    .hero-year {
+      font-size: 13px;
+      font-weight: 300;
+      color: var(--text);
+      padding-top: 20px;
+      white-space: nowrap;
+      text-align: right;
+      grid-column: 2;
+    }
+    .hero-meta-col { display: flex; flex-direction: column; text-align: right; }
+    .hero-meta-label {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      padding-top: 20px;
+      text-transform: uppercase;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    .hero-meta-val {
+      font-size: 13px;
+      font-weight: 300;
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    /* ── BRIEF / RESEARCH QUESTION BAND (checkered, full-bleed) ── */
+    .brief-band {
+      position: relative;
+      margin: 0 40px;
+      padding: 70px 0 76px;
+    }
+    .brief-bg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .brief-inner {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0 60px;
+      padding-left: 100px;
+      padding-right: 40px;
+      align-items: start;
+    }
+    .brief-label {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: 18px;
+    }
+    .brief-text {
+      font-size: 22px;
+      font-weight: 300;
+      line-height: 1.45;
+      color: var(--text);
+      max-width: 480px;
+    }
+    .brief-text strong { font-weight: 700; }
+
+    /* ── CHECKERBOARD PLACEHOLDER ── */
+    .ph {
+      background: repeating-conic-gradient(#ffffff 0% 25%, #f0f0f0 0% 50%) 0 0 / 30px 30px;
+      display: block;
+    }
+    .ph-solid {
+      background: #d6d6d6;
+      display: block;
+    }
+
+    /* ── SECTION DIVIDER ── */
+    .divider { margin: 0; padding: 0; }
+    .divider-line-row { display: flex; align-items: center; height: auto; }
+    .divider-thick { width: 130px; height: 3px; background: #ffffff; flex-shrink: 0; }
+    .divider-thin { flex: 1; height: 2px; background: rgba(255,255,255,0.32); }
+    .divider-label {
+      font-size: 13px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      font-weight: 500;
+      color: var(--text);
+      padding-top: 8px;
+      padding-left: 0;
+    }
+
+    /* ── SECTION WRAPPER ── */
+    .section { padding: 0 40px; }
+    /* ===== SIDE GAP — left/right inset of all section content =====
+       Change these two values together to move every section's text and
+       images closer to or further from the page edges. The wayfinding
+       image grid and the outcome mockup images intentionally break out
+       past this inset (see .wf-grid margin and the outcome media div). */
+    .section-inner { padding-left: 100px; padding-right: 100px; }
+
+    /* ================================================================
+       ADJUST VERTICAL GAPS BETWEEN CONTENT HERE
+       Each section rule below sets its own spacing:
+         padding-top    = gap ABOVE that section's content
+         padding-bottom = gap BELOW that section's content
+       Increase / decrease those numbers to space the text and image
+       blocks further apart or closer together.
+       Smaller gaps WITHIN a section come from `margin-bottom` on its
+       labels/paragraphs, and image rows use `gap`.
+       ================================================================ */
+
+    /* FINDINGS */
+    .findings { padding-top: 80px; padding-bottom: 80px; display: grid; grid-template-columns: 340px 1fr; gap: 0; }
+    .sub-label {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: 20px;
+    }
+    .body-text { font-size: 16px; font-weight: 300; line-height: 1.6; color: var(--text); }
+    .body-text p + p { margin-top: 20px; }
+
+    /* THE PROBLEM */
+    .problem { padding-top: 80px; padding-bottom: 80px; display: grid; grid-template-columns: 340px 1fr; gap: 0; }
+    .problem-quote { font-size: 26px; font-weight: 300; line-height: 1.45; color: var(--text); }
+    .problem-quote strong { font-weight: 700; }
+    .so-how-wrap {
+      display: flex; flex-direction: column; align-items: center; margin-top: 32px;
+      /* Slight delayed fade-in: appears just after the Problem text reveals.
+         Tweak the 0.5s delay below to make it appear sooner / later. */
+      opacity: 0; transform: translateY(14px);
+      transition: opacity 0.6s ease 0.5s, transform 0.6s ease 0.5s;
+    }
+    .reveal.visible .so-how-wrap { opacity: 1; transform: translateY(0); }
+    .so-how-line { width: 2px; height: 56px; background: rgba(255, 255, 255, 0.4); margin-bottom: 10px; }
+    .so-how-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.5); margin-bottom: 10px; }
+    .so-how-text {
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      text-align: center;
+      color: var(--text);
+      font-weight: 400;
+      line-height: 1.6;
+    }
+
+    /* IDEATION */
+    .ideation { padding-top: 20px; padding-bottom: 0; }
+    .ideation-label {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: 16px;
+    }
+    .ideation-image { width: 100%; aspect-ratio: 16 / 6; }
+    .ideation-text {
+      font-size: 16px;
+      font-weight: 300;
+      line-height: 1.65;
+      color: var(--text);
+      max-width: 520px;
+      padding: 32px 0 80px;
+    }
+
+    /* SOLUTION */
+    .solution { padding-top: 40px; padding-bottom: 100px; }
+    .solution-label {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: 20px;
+    }
+    .solution-text { font-size: 30px; font-weight: 300; line-height: 1.45; color: var(--text); }
+    .solution-text strong { font-weight: 700; }
+
+    /* FIELD REVIEW */
+    .field-review { padding-top: 60px; padding-bottom: 80px; display: grid; grid-template-columns: 300px 1fr; gap: 0 56px; align-items: start; }
+    .field-review-left-img { width: 100%; aspect-ratio: 1 / 1; }
+    .fr-pair { display: grid; grid-template-columns: 1.35fr 1fr; gap: 0 24px; align-items: start; margin-top: 28px; }
+    .fr-pair-portrait { width: 100%; aspect-ratio: 4 / 5; }
+    .fr-pair-land { width: 100%; aspect-ratio: 5 / 4; }
+
+    /* INSTALLATION IDEAS */
+    .installation-ideas { padding-top: 40px; padding-bottom: 60px; }
+    .install-label {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: 14px;
+    }
+    .install-body { font-size: 16px; font-weight: 300; line-height: 1.65; max-width: 640px; margin-bottom: 50px; }
+    .circles-row { display: flex; align-items: flex-start; gap: 28px; padding-bottom: 80px; }
+    .circle { border-radius: 50%; background: #d6d6d6; flex-shrink: 0; }
+    .circle-stack { display: flex; flex-direction: column; }
+
+    /* VISUAL DIRECTION */
+    .visual-direction { padding-top: 40px; padding-bottom: 0; }
+    .vd-textwrap { padding-left: 45%; margin-bottom: 28px; }
+    .vd-label {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: 14px;
+    }
+    .vd-body { font-size: 16px; font-weight: 300; line-height: 1.65; }
+    .vd-image { width: 100%; aspect-ratio: 16 / 7; }
+
+    /* EYE FOLLOW INSTALLATION */
+    .eye-follow { padding-top: 80px; padding-bottom: 0; }
+    .eye-follow-label {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: 40px;
+    }
+    .eye-follow-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+    .eye-left { display: flex; flex-direction: column; }
+    .eye-left-img { width: 100%; aspect-ratio: 16 / 10; }
+    .eye-right { display: flex; flex-direction: column; }
+    .eye-sub-label {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: 14px;
+      padding-left: 32px;
+    }
+    .eye-sub-body { font-size: 16px; font-weight: 300; line-height: 1.65; padding-left: 32px; padding-bottom: 40px; }
+    .eye-right-img { width: 100%; aspect-ratio: 16 / 10; margin-top: auto; }
+    .eye-hi-fi-label {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      font-weight: 400;
+      color: var(--text);
+      margin-top: 10px;
+      padding-left: 32px;
+      margin-bottom: 10px;
+    }
+    .eye-hi-fi-body { font-size: 16px; font-weight: 300; line-height: 1.65; padding-left: 32px; }
+
+    /* WEBSITE */
+    .website { padding-top: 100px; padding-bottom: 60px; text-align: center; }
+    .website-label {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: 48px;
+    }
+    .website-circles { display: flex; justify-content: center; align-items: center; gap: 24px; margin-bottom: 48px; }
+    .website-circle {
+      border-radius: 50%;
+      background: #1e1e1e;
+      border: 1px solid rgba(255,255,255,0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      text-align: center;
+      font-weight: 400;
+      line-height: 1.5;
+      padding: 20px;
+    }
+    .website-body { font-size: 18px; font-weight: 300; line-height: 1.65; max-width: 680px; margin: 0 auto 0; }
+
+    /* USER FLOW + FINAL WEBSITE (combined) */
+    .flow-final {
+      padding-top: 60px; padding-bottom: 80px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0 56px;
+      align-items: center;
+    }
+    .ff-left { display: flex; flex-direction: column; }
+    .uf-label {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: 14px;
+    }
+    .uf-body { font-size: 18px; font-weight: 300; line-height: 1.65; }
+    .uf-body strong { font-weight: 700; }
+    .ff-uf-img { width: 100%; aspect-ratio: 1 / 1; margin-top: 28px; }
+    .ff-fw-block { margin-top: 64px; text-align: right; }
+    .ff-fw-block .uf-body { max-width: 100%; }
+    .ff-right-img { width: 100%; aspect-ratio: 9 / 16; align-self: center; }
+
+    /* SPATIAL DESIGN */
+    .spatial-design { padding-top: 60px; padding-bottom: 0; }
+    .spatial-label {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: 14px;
+    }
+    .spatial-body { font-size: 26px; font-weight: 300; line-height: 1.45; max-width: 900px; margin-bottom: 48px; }
+    .spatial-body strong { font-weight: 700; }
+    .spatial-images { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; margin-bottom: 16px; }
+    .spatial-right-stack { display: flex; flex-direction: column; gap: 16px; }
+    .spatial-main { width: 100%; aspect-ratio: 4 / 3; }
+    .spatial-sm { width: 100%; aspect-ratio: 4 / 3; }
+
+    /* BLENDER */
+    .blender { padding-top: 60px; padding-bottom: 40px; }
+    .blender-label {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: 14px;
+    }
+    .blender-body { font-size: 16px; font-weight: 300; line-height: 1.65; max-width: 900px; }
+
+    /* FLOW OF EXHIBITION */
+    .flow-exhibition { padding-top: 60px; padding-bottom: 0; text-align: center; }
+    .flow-label {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: 14px;
+    }
+    .flow-body { font-size: 16px; font-weight: 300; line-height: 1.65; max-width: 860px; margin: 0 auto 40px; }
+    .flow-img { width: 100%; aspect-ratio: 16 / 5; }
+    .flow-circles { display: flex; justify-content: center; gap: 24px; padding: 0 40px; position: relative; top: -40px; }
+    .flow-circle {
+      width: 148px; height: 148px;
+      border-radius: 50%;
+      background: #161616;
+      border: 1px solid rgba(255,255,255,0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 9px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      text-align: center;
+      font-weight: 400;
+      padding: 16px;
+      line-height: 1.5;
+    }
+
+    /* WAYFINDING */
+    .wayfinding { padding-top: 20px; padding-bottom: 40px; }
+    .wf-label {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: 14px;
+    }
+    .wf-body { font-size: 26px; font-weight: 300; line-height: 1.45; max-width: 900px; margin-bottom: 48px; }
+    .wf-body strong { font-weight: 700; }
+    .wf-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; position: relative; margin: 0 -100px; }
+    .wf-col { display: flex; flex-direction: column; gap: 0; }
+    .wf-img { width: 100%; aspect-ratio: 3 / 4; }
+    .wf-img-tall { width: 100%; aspect-ratio: 3 / 5; }
+    .wf-signage-circle {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 200px; height: 200px;
+      border-radius: 50%;
+      background: #0e0e0e;
+      border: 1px solid rgba(255,255,255,0.3);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 24px;
+      z-index: 10;
+    }
+    .wf-signage-title { font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 400; margin-bottom: 10px; }
+    .wf-signage-body { font-size: 11px; font-weight: 300; line-height: 1.55; color: var(--muted); }
+
+    /* FINAL WAYFINDING */
+    .final-wayfinding { padding-top: 60px; padding-bottom: 80px; }
+    .fw2-images { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 32px; }
+    .fw2-img { width: 100%; aspect-ratio: 16 / 9; }
+    .fw2-label {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: 14px;
+    }
+    .fw2-body { font-size: 16px; font-weight: 300; line-height: 1.65; max-width: 900px; }
+    .fw2-body strong { font-weight: 700; }
+
+    /* ── OUTCOME SECTION ── */
+    .outcome-body-row { padding-top: 60px; padding-bottom: 60px; display: grid; grid-template-columns: 1fr 1fr; gap: 0 80px; align-items: start; }
+    .outcome-right { display: flex; flex-direction: column; gap: 0; }
+    .outcome-text-main { font-size: 16px; font-weight: 300; line-height: 1.65; color: var(--text); }
+
+    .outcome-imgs { display: flex; flex-direction: column; gap: 32px; padding-bottom: 80px; }
+    .outcome-img { width: 100%; aspect-ratio: 16 / 9; }
+    .outcome-img-checker {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: repeating-conic-gradient(#e8e8e8 0% 25%, #d8d8d8 0% 50%) 0 0 / 40px 40px;
+    }
+
+    /* Mockup / explainer card */
+    .mockup-card { background: #c5b8f0; color: #1a1a1a; padding: 32px 40px 48px; width: 280px; }
+    .mockup-card-title { font-size: 22px; font-weight: 700; margin-bottom: 8px; }
+    .mockup-card-sub { font-size: 20px; font-weight: 300; }
+
+    /* ── PROJECT NAV ── */
+    .project-nav { border-top: 1px solid rgba(255,255,255,0.1); padding: 40px; display: flex; justify-content: space-between; align-items: center; }
+    .pnav-link {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      font-weight: 400;
+      color: var(--text);
+      text-decoration: none;
+      opacity: 0.7;
+      transition: opacity 0.2s;
+    }
+    .pnav-link:hover { opacity: 1; }
+
+    /* ── CONSTANT LINE-HEIGHT FOR SMALL TEXT (labels, meta, captions) ── */
+    .hero-year, .hero-meta-label, .hero-meta-val, .brief-label, .divider-label,
+    .sub-label, .so-how-text, .ideation-label, .solution-label, .install-label,
+    .vd-label, .eye-follow-label, .eye-sub-label, .eye-hi-fi-label, .website-label,
+    .website-circle, .uf-label, .spatial-label, .blender-label, .flow-label,
+    .flow-circle, .wf-label, .wf-signage-title, .wf-signage-body, .fw2-label,
+    .pnav-link {
+      line-height: 1.6;
+    }
+
+    /* ── SCROLLY REVEAL ── */
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.75s ease, transform 0.75s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+  </style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav>
+  <a href="landing-page.html" class="nav-logo">
+    <div class="nav-logo-img-wrap">
+      <img class="logo-img-default" src="star-logo/star-line.png" alt="logo">
+      <img class="logo-img-hover" src="star-logo/star-fill.png" alt="logo hover">
+      <span class="logo-svg-fallback">
+      </span>
+    </div>
+    SUMAYA ABRAHAMS
+  </a>
+  <div class="nav-links">
+    <a href="design-work.html">Design Work</a>
+    <a href="the-archive.html">The Archive</a>
+    <a href="#">About</a>
+  </div>
+  <div class="nav-social">
+    <a href="#" aria-label="Instagram" target="_blank" rel="noopener">
+      <span class="svg-fallback"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none"/></svg></span>
+    </a>
+    <a href="#" aria-label="LinkedIn" target="_blank" rel="noopener">
+      <span class="svg-fallback"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></span>
+    </a>
+  </div>
+</nav>
+
+<!-- ── HERO BANNER IMAGE ── -->
+<img class="hero-banner ph" src="evanescent-cs-images/hero.png" alt="Hero banner — replace with your own image">
+
+<!-- ── HERO TEXT ── -->
+ <br> </br>
+<div class="hero-text section">
+  <p class="hero-desc">There is a lack of intrinsic playful experiences in adult lives. Urban environments are often designed for navigation and productivity, leaving little room for imagination or spontaneous engagement. Evanescent is an interactive digital experience that invites audiences to re-experience their commuting routine.</p>
+  <div>
+    <p class="hero-year">[ 2026 ]</p>
+  </div>
+  <div class="hero-meta-col">
+    <p class="hero-meta-label">Roles</p>
+    <p class="hero-meta-val">UX/UI Design<br>Wayfinding<br>Spatial Design</p>
+  </div>
+  <div class="hero-meta-col">
+    <p class="hero-meta-label">Client</p>
+    <p class="hero-meta-val">Academic<br>Group Project</p>
+  </div>
+</div>
+ <br> </br>
+<!-- ── BRIEF / RESEARCH QUESTION BAND ── -->
+<div class="brief-band">
+  <!-- ===== BRIEF / RESEARCH QUESTION BACKGROUND IMAGE =====
+       To change the image sitting BEHIND this section, paste your image
+       URL into the src="" below. It replaces the checkered placeholder. -->
+  <img class="brief-bg ph" src="evanescent-cs-images/texture.jpg" alt="Brief background — replace with your own image">
+  <div class="brief-inner">
+    <div class="brief-col">
+      <p class="brief-label">Brief</p>
+      <p class="brief-text">The brief for this project was to identify <strong>"Identify a gap or a problem in our society, then design and develop a means to incorporate an intrinsic sense of "playfulness?"</strong></p>
+    </div>
+    <div class="brief-col">
+      <p class="brief-label">Research Question</p>
+      <p class="brief-text">"How can we disrupt urban commuters and entice curiosity while changing perspective."</p>
+    </div>
+  </div>
+</div>
+ <br> </br>
+<!-- ══════════ APPROACH DIVIDER ══════════ -->
+<div class="divider section" style="margin-top:64px;">
+  <div class="divider-line-row">
+    <div class="divider-thick"></div>
+    <div class="divider-thin"></div>
+  </div>
+  <p class="divider-label">Approach</p>
+</div>
+
+<!-- ── APPROACH CONTENT ── -->
+
+<!-- FINDINGS -->
+<div class="findings section section-inner reveal">
+  <div class="findings-left"></div>
+  <div class="findings-right">
+    <p class="sub-label">Findings</p>
+    <div class="body-text">
+      <p>Based on the research my team and i found that commuting is an important part of daily life in New Zealand, connecting people to work and everyday activities.</p>
+      <p>However, it is also a source of stress and anxiety for some commuters due to its fast passed and rushing nature.</p>
+    </div>
+  </div>
+</div>
+
+<!-- THE PROBLEM -->
+<div class="problem section section-inner reveal">
+  <div class="problem-left"></div>
+  <div class="problem-right">
+    <p class="sub-label">The Problem</p>
+    <p class="problem-quote">"Urban <strong>commuters</strong> in Auckland <strong>are trapped in repetitive, mundane routines</strong> that numb curiosity and attention, leaving little room for <strong>spontaneity</strong>."</p>
+    <div class="so-how-wrap">
+      <div class="so-how-line"></div>
+      <div class="so-how-dot"></div>
+      <p class="so-how-text">SO HOW CAN<br>WE CHANGE THAT?</p>
+    </div>
+  </div>
+</div>
+
+<!-- IDEATION -->
+<div class="ideation section section-inner reveal">
+  <p class="ideation-label">Ideation</p>
+  <img class="ideation-image ph-solid" src="evanescent-cs-images/ideation.png" alt="Ideation image — replace with your own">
+  <p class="ideation-text">We wanted to create an experience that would have a lasting impression with commuters. To bring some spontaneity and curiosity into there life. My team lead Jaron identified Surrealism as the core visual direction for the project due to its playful nature and its potential for unique installations.</p>
+</div>
+
+<!-- SOLUTION -->
+<div class="solution section section-inner reveal">
+  <p class="solution-label">Solution</p>
+  <p class="solution-text">We landed on creating an <strong>Surrealist Exhibition</strong>, the goal with it is to get commuters to have a change in perspective and see things they usually wouldn't see. Breaking there usual routine and getting them to view things differently.</p>
+</div>
+ <br> </br> <br> </br>
+<!-- ══════════ PROCESSES DIVIDER ══════════ -->
+<div class="divider section">
+  <div class="divider-line-row">
+    <div class="divider-thick"></div>
+    <div class="divider-thin"></div>
+  </div>
+  <p class="divider-label">Processes</p>
+</div>
+
+<!-- ── PROCESSES CONTENT ── -->
+
+<!-- FIELD REVIEW -->
+<div class="field-review section section-inner reveal">
+  <div class="field-review-left">
+    <img class="ph-solid field-review-left-img" src="evanescent-cs-images/1-bledisloelane .png" alt="Field review main — replace with your own">
+  </div>
+  <div class="field-review-right">
+    <p class="sub-label">Field Review</p>
+    <p class="body-text">My team went to a range of locations around Auckland city and identified <strong>Bledisloe Lane</strong> to be a good location because of its high foot traffic to host our exhibition within it.</p>
+    <div class="fr-pair">
+      <img class="ph-solid fr-pair-portrait" src="evanescent-cs-images/2-bledisloelane .png" alt="Field review 2 — replace with your own">
+      <img class="ph-solid fr-pair-land" src="evanescent-cs-images/3-bledisloelane .png" alt="Field review 3 — replace with your own">
+    </div>
+  </div>
+</div>
+ <br> </br>
+  <br> </br>
+   <br> </br>
+    <br> </br>
+<!-- INSTALLATION IDEAS -->
+<div class="installation-ideas section section-inner reveal">
+  <p class="install-label">Installation Ideas</p>
+  <p class="install-body">Individual we brainstormed and created some concepts for installations and my eye tracking idea was one we chose to further develop.</p>
+  <div class="circles-row">
+    <div class="circle" style="width:200px;height:200px;margin-top:70px;"></div>
+    <div class="circle" style="width:300px;height:300px;margin-top:20px;"></div>
+    <div class="circle-stack">
+      <div class="circle" style="width:290px;height:290px;" ></div>
+      <div class="circle" style="width:150px;height:150px;margin-top:-10px;margin-left:120px;"></div>
+    </div>
+  </div>
+</div>
+ <br> </br>
+  <br> </br>
+   <br> </br>
+
+<!-- VISUAL DIRECTION -->
+<div class="visual-direction section section-inner reveal">
+  <div class="vd-textwrap">
+    <p class="vd-label">Visual Direction</p>
+    <p class="vd-body">As a team we collaboratively added input towards the visuals and the overall look for the exhibition.</p>
+  </div>
+  <img class="vd-image ph-solid" src="evanescent-cs-images/visual-direction-lmb.png" alt="Visual direction — replace with your own">
+</div>
+ <br> </br>
+  <br> </br>
+   <br> </br>
+    <br> </br>
+     <br> </br>
+      <br> </br>
+      <br> </br>
+   <br> </br>
+    <br> </br>
+     <br> </br>
+      <br> </br>
+<!-- EYE FOLLOW INSTALLATION -->
+<div class="eye-follow section section-inner reveal">
+  <p class="eye-follow-label">Eye Follow – Installation</p>
+  <div class="eye-follow-grid">
+    <div class="eye-left">
+      <img class="eye-left-img ph-solid" src="evanescent-cs-images/eye-follow-installation-ver-1.png" alt="Eye lo-fi — replace with your own">
+    </div>
+    <div class="eye-right">
+      <p class="eye-sub-label">Lo-fi Version</p>
+      <p class="eye-sub-body">For the eye tracking installation I sketched the eye socket and iris separately on Procreate which would allow Jaron to bring the eye to life with HTML, CSS and JavaScript on the browser.</p>
+      <img class="eye-right-img ph-solid" src="evanescent-cs-images/eye-following-installation-final.png" alt="Eye hi-fi — replace with your own">
+      <p class="eye-hi-fi-label">Hi-fi Final Version</p>
+      <p class="eye-hi-fi-body">Through further refinement the final eye-tracking illustration for the installation was finalised as well as applying the visual direction to keep everything consistent.</p>
+    </div>
+  </div>
+</div>
+<br> </br>
+   <br> </br>
+    <br> </br>
+     <br> </br>
+      <br> </br>
+      <br> </br>
+   <br> </br>
+    <br> </br>
+     <br> </br>
+      <br> </br>
+<!-- WEBSITE -->
+<div class="website section section-inner reveal">
+  <p class="website-label">Website</p>
+  <div class="website-circles">
+    <div class="website-circle" style="width:190px;height:190px;">SURREALISM<br>VISUALS</div>
+    <div class="website-circle" style="width:235px;height:235px;">DEEPER<br>UNDERSTANDING</div>
+    <div class="website-circle" style="width:170px;height:170px;">TOOL AND OR<br>GUIDE</div>
+  </div>
+  <p class="website-body">As an extension of the exhibition, we wanted to create a website that reinforced the surrealist visuals and be an additional guide towards the experiences as whole. providing deeper context into installations.</p>
+</div>
+
+<!-- USER FLOW + FINAL WEBSITE -->
+<div class="flow-final section section-inner reveal">
+  <div class="ff-left">
+    <p class="uf-label">User Flow</p>
+    <p class="uf-body">I worked with jaron to develop a lo-fi version of what the website as to what could potentially look like along with the additional pages </p>
+    <img class="ph-solid ff-uf-img" src="evanescent-cs-images/website-lofi.png" alt="User flow — replace with your own">
+    <div class="ff-fw-block">
+      <p class="uf-label">Final Website</p>
+      <p class="uf-body">through further iterations and testing this was the final flow of the website. it uses scrolly telling through to paint a strong narrative for the exhibitions experiences.</p>
+    </div>
+  </div>
+  <img class="ph-solid ff-right-img" src="evanescent-cs-images/website-final.png" alt="Final website — replace with your own">
+</div>
+<br> </br>
+   <br> </br>
+    <br> </br>
+     <br> </br>
+      <br> </br>
+<!-- SPATIAL DESIGN -->
+<div class="spatial-design section section-inner reveal">
+  <p class="spatial-label">Spatial Design</p>
+  <p class="spatial-body">To ensure the exhibition experience was not overwhelming, I created a 3D model of the alleyway in Blender and placed each installation within the space. This allowed me to carefully consider spacing and visitor flow, ensuring each experience had room to be engaged with individually.</p>
+  <div class="spatial-images">
+    <img class="spatial-main ph" src="evanescent-cs-images/blender-1.png" alt="Spatial design main — replace with your own">
+    <div class="spatial-right-stack">
+      <img class="spatial-sm ph" src="evanescent-cs-images/blender-2.png" alt="Spatial design top right — replace with your own">
+      <img class="spatial-sm ph" src="evanescent-cs-images/blender-3.png" alt="Spatial design bottom right — replace with your own">
+    </div>
+  </div>
+</div>
+
+
+<br> </br>
+   <br> </br>
+    <br> </br>
+     <br> </br>
+      <br> </br>
+      <br> </br>
+   <br> </br>
+    <br> </br>
+     <br> </br>
+      <br> </br>
+<!-- WAYFINDING -->
+<div class="wayfinding section section-inner reveal">
+  <p class="wf-label">Wayfinding</p>
+  <p class="wf-body">To further guide visitors towards the exhibition, I explored the development of wayfinding elements for the surrounding area, helping to spark curiosity towards the journey to the exhibition space.</p>
+
+
+<!-- FINAL WAYFINDING -->
+<div class="final-wayfinding section section-inner reveal">
+  <div class="fw2-images">
+    <img class="fw2-img ph-solid" src="evanescent-cs-images/wayfinding-eyes.png" alt="Final wayfinding 1 — replace with your own">
+    <img class="fw2-img ph-solid" src="evanescent-cs-images/wayfinding-signage.png" alt="Final wayfinding 2 — replace with your own">
+  </div>
+  <p class="fw2-label">Final Wayfinding</p>
+  <p class="fw2-body">In the final design, I chose to keep the wayfinding simple. Which would be achieved through floor decals inspired by the exhibition logo, along side a signage post positioned on the side of the exhibition with the highest foot traffic to maximise visibility and guide visitors towards the experience.</p>
+</div>
+
+<!-- ══════════ OUTCOME DIVIDER ══════════ -->
+<div class="divider section">
+  <div class="divider-line-row">
+    <div class="divider-thick"></div>
+    <div class="divider-thin"></div>
+  </div>
+  <p class="divider-label">Outcome</p>
+</div>
+
+<!-- ── OUTCOME CONTENT ── -->
+<div class="outcome-body-row section section-inner reveal">
+  <div class="outcome-left"></div>
+  <div class="outcome-right">
+  </div>
+</div>
+
+<!-- Outcome placeholder images (full-bleed; only the text above sits between the lines) -->
+<div>
+    </div>
+  </div>
+  <!-- Full-width outcome images, evenly gapped -->
+  <div class="outcome-imgs">
+    <img src="evanescent-cs-images/Group 30.png" alt="Outcome image 1 — replace with your own" class="outcome-img ph-solid">
+    <img src="evanescent-cs-images/Screenshot 2026-06-07 at 3.40.44 AM 1.png" alt="Outcome image 2 — replace with your own" class="outcome-img ph-solid">
+    <img src="evanescent-cs-images/Screenshot 2026-06-07 at 3.47.48 AM 1.png" alt="Outcome image 3 — replace with your own" class="outcome-img ph-solid">    
+    <img src="evanescent-cs-images/Screenshot 2026-06-07 at 3.50.10 AM 1.png" alt="Outcome image 4 — replace with your own" class="outcome-img ph-solid">
+    <img src="evanescent-cs-images/Group 31.png" alt="Outcome image 5 — replace with your own" class="outcome-img ph">
+    <img src="evanescent-cs-images/Screenshot 2026-06-07 at 3.45.39 AM 1.png" alt="Outcome image 6 — replace with your own" class="outcome-img ph">
+
+  </div>
+</div>
+
+<!-- ── PROJECT NAV ── -->
+<div class="project-nav">
+  <a href="#" class="pnav-link">← Previous project</a>
+  <a href="#" class="pnav-link">Next project →</a>
+</div>
+
+<script>
+  const reveals = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.06, rootMargin: '0px 0px -40px 0px' });
+  reveals.forEach(el => io.observe(el));
+</script>
+
+</body>
+</html>

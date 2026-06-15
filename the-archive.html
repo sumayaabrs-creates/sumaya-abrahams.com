@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://use.typekit.net/mle8fvw.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sumaya Abrahams — The Archive</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+:root { --bg:#161616; --text:#ffffff; --muted:#bab6b6; }
+html,body { width:100%; height:100%; background:var(--bg); color:var(--text); font-family:'Barlow',sans-serif; overflow:hidden; }
+
+/* ── NAV ── */
+nav {
+  position:fixed; top:0; left:0; right:0; height:56px;
+  display:flex; align-items:center; padding:0 28px;
+  z-index:100; border-bottom:1px solid rgba(200, 200, 200, 0.18);
+}
+.nav-logo {
+  display:flex; align-items:center; gap:10px;
+  font-size:13px; letter-spacing:0.12em; font-weight:500;
+  text-transform:uppercase; text-decoration:none; color:var(--text);
+}
+.nav-logo-img-wrap { position:relative; width:30px; height:26px; flex-shrink:0; }
+.nav-logo-img-wrap img { position:absolute; inset:0; width:100%; height:100%; object-fit:contain; transition:opacity 0.25s; }
+.logo-img-default { opacity:1; }
+.logo-img-hover   { opacity:0; }
+.nav-logo:hover .logo-img-default { opacity:0; }
+.nav-logo:hover .logo-img-hover   { opacity:1; }
+.nav-logo-img-wrap .logo-svg-fallback { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; }
+.nav-logo-img-wrap .logo-svg-fallback svg { width:22px; height:22px; }
+
+.nav-links { position:absolute; left:49%; transform:translateX(-50%); display:flex; gap:40px;  }
+.nav-links a { font-size:11px; letter-spacing:0.18em; font-weight:400; text-transform:uppercase; color:var(--text); text-decoration:none; opacity:0.85; transition:opacity 0.2s; }
+.nav-links a:hover { opacity:1; }
+
+.nav-social { margin-left:auto; display:flex; gap:14px; align-items:center; }
+.nav-social a { position:relative; display:block; width:26px; height:26px; flex-shrink:0; opacity:0.75; transition:opacity 0.2s; }
+.nav-social a:hover { opacity:1; }
+.nav-social a img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; z-index:1; }
+.nav-social a .svg-fallback { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; z-index:0; }
+.nav-social a .svg-fallback svg { width:17px; height:17px; color:#ffffff; }
+
+/* ── CANVAS ── */
+#canvas { position:fixed; inset:0; overflow:hidden; }
+
+/* ── CENTRE TEXT ── */
+.centre-text {
+  position:absolute; top:50%; left:50%;
+  transform:translate(-50%,-50%);
+  text-align:center; pointer-events:none; z-index:10; user-select:none;
+}
+.centre-text::before,.centre-text::after {
+  content:''; position:absolute; left:50%; transform:translateX(-50%);
+  width:3px; background:rgba(255, 255, 255, 0.55);
+}
+.centre-text::before { bottom:calc(100% + 10px); height:55px; }
+.centre-text::after  { top:calc(100% + 30px); height:55px; }
+
+.centre-title {
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(80px,2vw,882px); font-weight:100;
+  font-family: "waverly-cf", sans-serif;
+font-style: normal;
+  line-height:1; margin-bottom:8px;
+  pointer-events:all; cursor:pointer; transition:opacity 0.2s;
+  mix-blend-mode:difference;
+}
+.centre-title:hover { opacity:0.75; }
+.centre-subtitle { display:flex; flex-direction:column; gap:4px; }
+.centre-subtitle span {
+  font-size:11px; letter-spacing:0.2em; color:var(--muted); font-weight:300;
+  transition:color 0.2s; pointer-events:all; cursor:pointer; padding:2px 0;
+  mix-blend-mode:difference;
+}
+.centre-subtitle span:hover { color:#fff; }
+.centre-subtitle span.active { color:#fff; }
+
+.rule-wrap { display:flex; align-items:center; justify-content:center; gap:500px; margin-bottom:0.10px; }
+.rule { width:70px; height:3px; background:rgba(255, 255, 255, 0.55); mix-blend-mode:difference; }
+
+/* ── IMAGE CARDS ── */
+.img-card {
+  position:absolute; left:0; top:0;
+  cursor:grab; border:1px solid rgba(255,255,255,0.12);
+  will-change:transform; z-index:5;
+  background:transparent; overflow:hidden;
+  /* NO css transition on transform — physics loop owns it */
+  transition:box-shadow 0.2s, opacity 0.6s;
+}
+.img-card:active  { cursor:grabbing; }
+.img-card:hover   { box-shadow:0 0 0 1px rgba(255,255,255,0.35); }
+.img-card.dragging { z-index:50; cursor:grabbing; }
+.img-card.inactive { opacity:0; pointer-events:none; }
+.img-card img { width:100%; height:100%; object-fit:cover; display:block; pointer-events:none; user-select:none; }
+
+/* ── LIGHTBOX ── */
+#overlay {
+  position:fixed; inset:0; background:rgba(22,22,22,0.92); z-index:200;
+  display:flex; align-items:center; justify-content:center;
+  opacity:0; pointer-events:none; transition:opacity 0.35s ease;
+}
+#overlay.active { opacity:1; pointer-events:all; }
+.lightbox { display:flex; flex-direction:column; align-items:center; max-width:620px; width:90%; transform:translateY(18px); transition:transform 0.35s ease; }
+#overlay.active .lightbox { transform:translateY(0); }
+.lightbox-img { width:100%; aspect-ratio:1/1; border:1px solid rgba(255,255,255,0.12); background:transparent; overflow:hidden; }
+.lightbox-img img { width:100%; height:100%; object-fit:cover; display:block; }
+.lightbox-meta { width:100%; display:grid; grid-template-columns:1fr 1fr 1fr; padding-top:20px; }
+.meta-col { display:flex; flex-direction:column; gap:5px; }
+.meta-col:nth-child(2) { text-align:center; align-items:center; }
+.meta-col:nth-child(3) { text-align:right; align-items:flex-end; }
+.meta-label { font-size:10px; letter-spacing:0.22em; font-weight:500; text-transform:uppercase; color:#fff; }
+.meta-value { font-size:13px; letter-spacing:0.04em; color:var(--muted); font-weight:300; line-height:1.5; }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="landing-page.html" class="nav-logo">
+    <div class="nav-logo-img-wrap">
+      <!-- DEFAULT star: replace src below with your image e.g. src="logo.png" -->
+      <img class="logo-img-default" src="star-logo/star-line.png" alt="logo">
+      <!-- HOVER star: replace src below with your hover image e.g. src="logo-hover.png" -->
+      <img class="logo-img-hover" src="star-logo/star-fill.png" alt="logo hover">
+      <span class="logo-svg-fallback">
+      </span>
+    </div>
+    Sumaya Abrahams
+  </a>
+  <div class="nav-links">
+    <a href="design-work.html">Design Work</a>
+    <a href="the-archive.html">The Archive</a>
+    <a href="#">About</a>
+  </div>
+  <div class="nav-social">
+    <!-- INSTAGRAM: set href to your URL. To use a custom icon, add: <img src="your-icon.png" alt="Instagram"> inside this <a> before the svg-fallback span -->
+    <a href="#" aria-label="Instagram" target="_blank" rel="noopener">
+      <span class="svg-fallback"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none"/></svg></span>
+    </a>
+    <!-- LINKEDIN: set href to your URL. To use a custom icon, add: <img src="your-icon.png" alt="LinkedIn"> inside this <a> before the svg-fallback span -->
+    <a href="#" aria-label="LinkedIn" target="_blank" rel="noopener">
+      <span class="svg-fallback"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></span>
+    </a>
+  </div>
+</nav>
+
+<div id="canvas">
+  <div class="centre-text">
+    <div class="centre-title" id="archive-title">THE ARCHIVE</div>
+    <div class="rule-wrap"><div class="rule"></div><div class="rule"></div></div>
+    <div class="centre-subtitle">
+      <span data-filter="Digital Sketches">Digital Sketches</span>
+      <span data-filter="Traditional Art">Traditional Art</span>
+      <span data-filter="Design Concepts">Design Concepts</span>
+    </div>
+  </div>
+</div>
+
+<div id="overlay">
+  <div class="lightbox" id="lightbox">
+    <div class="lightbox-img"><img id="lb-img" src="" alt=""></div>
+    <div class="lightbox-meta">
+      <div class="meta-col"><div class="meta-label" id="lb-type"></div><div class="meta-value" id="lb-medium"></div></div>
+      <div class="meta-col"><div class="meta-label">Title</div><div class="meta-value" id="lb-title"></div></div>
+      <div class="meta-col"><div class="meta-label">Origin</div><div class="meta-value" id="lb-origin"></div></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════════════════
+// ██  ADD YOUR IMAGES HERE
+// ═══════════════════════════════════════════════════════════════════════════════
+// For each artwork, set `img` to your file path or URL, for example:
+//   img: 'images/painting1.jpg'
+//   img: 'https://yoursite.com/photo.png'
+// Leave as '' to show a blank placeholder card.
+//
+// `category` must be one of:
+//   'Digital Sketches'  |  'Traditional Art'  |  'Design Concepts'
+// ═══════════════════════════════════════════════════════════════════════════════
+const artworks = [
+  {
+    img: 'thearchive-images/lustful-heart-painting.png',   // ← ADD YOUR IMAGE PATH HERE ---- (ADD)
+    category: 'Traditional Art',
+    type: 'Traditional', medium: 'Acrylic Painting',
+    title: 'Lustful Heart', origin: 'MAGS Art Show 2024',
+    w: 160, h: 160
+  },
+  {
+    img: 'thearchive-images/uncle.png',   // ← ADD YOUR IMAGE PATH HERE ---- (ADD)
+    category: 'Digital Sketches',
+    type: 'Digital', medium: 'Procreate',
+    title: 'Man with the dragon tattoo', origin: 'Personal-Work 2023',
+    w: 180, h: 260
+  },
+  {
+    img: 'thearchive-images/rose-skull-painting.png',   // ← ADD YOUR IMAGE PATH HERE ---- (ADD)
+    category: 'Traditional Art',
+    type: 'Traditional', medium: 'Acrylic Painting',
+    title: 'Rosey Vision', origin: 'MAGS Art Show 2024',
+    w: 160, h: 160
+  },
+  {
+    img: 'thearchive-images/shell-girls.png',   // ← ADD YOUR IMAGE PATH HERE ---- (ADD)
+    category: 'Digital Sketches',
+    type: 'Digital', medium: 'Procreate',
+    title: 'Shell Girls', origin: 'Tattoo-Design 2025',
+    w: 120, h: 170
+  },
+  {
+    img: 'thearchive-images/skull-snake.png',   // ← ADD YOUR IMAGE PATH HERE ---- (ADD)
+    category: 'Digital Sketches',
+    type: 'Digital', medium: 'Procreate',
+    title: 'Japanese Style', origin: 'Tattoo-Design 2025',
+    w: 355, h: 155
+  },
+  {
+    img: 'thearchive-images/flower-girls.png',   // ← ADD YOUR IMAGE PATH HERE ---- (ADD)
+    category: 'Digital Sketches',
+    type: 'Digital', medium: 'Procreate',
+    title: 'Flower Girls', origin: 'Tattoo-Design 2025',
+    w: 120, h: 170
+  },
+  {
+    img: 'thearchive-images/snake-flower-tattoo.png',   // ← ADD YOUR IMAGE PATH HERE ---- (ADD)
+    category: 'Digital Sketches',
+    type: 'Digital', medium: 'Mixed Media',
+    title: 'Echo System', origin: 'Collab 2024',
+    w: 160, h: 295
+  },
+  {
+    img: 'thearchive-images/fallen-angel.png',   // ← ADD YOUR IMAGE PATH HERE ---- (ADD)
+    category: 'Digital Sketches',
+    type: 'Digital', medium: 'Procreate',
+    title: 'Forbidden Yearning', origin: 'Tattoo-Design 2025',
+    w: 120, h: 170
+  },
+  {
+    img: 'thearchive-images/siren-angels.png',   // ← ADD YOUR IMAGE PATH HERE ---- (ADD)
+    category: 'Digital Sketches',
+    type: 'Digital', medium: 'Procreate',
+    title: 'Fallen Angel', origin: 'Tattoo-Design 2025',
+    w: 120, h: 170
+  },
+  {
+    img: 'thearchive-images/swan-drip-painting.png',   // ← ADD YOUR IMAGE PATH HERE ---- (ADD)
+    category: 'Traditional Art',
+    type: 'Traditional', medium: 'Acrylic Painting',
+    title: 'Swan', origin: 'MAGS Art Show 2024',
+    w: 170, h: 290
+  },
+    {
+    img: 'thearchive-images/toxic-oc.png',   // ← ADD YOUR IMAGE PATH HERE ---- (ADD)
+    category: 'Digital Sketches',
+    type: 'Digital', medium: 'Procreate',
+    title: 'Apocalypse Character Design', origin: 'Personal-Work 2025',
+    w: 120, h: 170
+  },
+];
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// PHYSICS CONFIG
+// ═══════════════════════════════════════════════════════════════════════════════
+const SPEED_MIN   = 0.08;  // px/frame — very slow base drift
+const SPEED_MAX   = 0.22;  // px/frame — max drift speed
+const DAMPING     = 0.994; // velocity preserved per frame (1 = no friction)
+const ZONE_PAD    = 70;    // extra clearance around centre text block (px)
+const NAV_H       = 56;    // height of fixed nav bar
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════════════════════════════════════
+const rand = (a, b) => a + Math.random() * (b - a);
+
+function getCentreZone() {
+  const r = document.querySelector('.centre-text').getBoundingClientRect();
+  return { x: r.left - ZONE_PAD, y: r.top - ZONE_PAD, w: r.width + ZONE_PAD*2, h: r.height + ZONE_PAD*2 };
+}
+
+function overlapsZone(px, py, pw, ph, z) {
+  return px < z.x+z.w && px+pw > z.x && py < z.y+z.h && py+ph > z.y;
+}
+
+// Push a card's velocity away from centre zone if it's heading into it
+function pushAwayFromZone(card, z) {
+  const cx = card.x + card.w/2;
+  const cy = card.y + card.h/2;
+  const zcx = z.x + z.w/2;
+  const zcy = z.y + z.h/2;
+  if (overlapsZone(card.x, card.y, card.w, card.h, z)) {
+    const dx = cx - zcx;
+    const dy = cy - zcy;
+    const len = Math.sqrt(dx*dx + dy*dy) || 1;
+    card.vx += (dx/len) * 0.35;
+    card.vy += (dy/len) * 0.35;
+  }
+}
+
+function safeSpawnPos(w, h) {
+  const margin = 20;
+  const z = getCentreZone();
+  let x, y, tries = 0;
+  do {
+    x = rand(margin, window.innerWidth  - w - margin);
+    y = rand(NAV_H + margin, window.innerHeight - h - margin);
+    tries++;
+  } while (overlapsZone(x, y, w, h, z) && tries < 500);
+  return { x, y };
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════════════════════════
+let activeFilter = null;
+let cards = [];
+let paused = false;
+const canvasEl = document.getElementById('canvas');
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// BUILD CARDS
+// ═══════════════════════════════════════════════════════════════════════════════
+function buildCards() {
+  artworks.forEach((art, i) => {
+    const { x, y } = safeSpawnPos(art.w, art.h);
+    const angle = rand(0, Math.PI * 2);
+    const speed = rand(SPEED_MIN, SPEED_MAX);
+
+    const el = document.createElement('div');
+    el.className = 'img-card';
+    el.style.width  = art.w + 'px';
+    el.style.height = art.h + 'px';
+    el.style.transform = `translate(${x}px,${y}px)`;
+    el.style.opacity = '0';
+    el.dataset.index = i;
+
+    const img = document.createElement('img');
+    img.src = art.img || '';
+    img.alt = art.title;
+    el.appendChild(img);
+
+    canvasEl.appendChild(el);
+
+    const card = {
+      art, el, i,
+      x, y, w: art.w, h: art.h,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed,
+      active: true,   // participating in physics
+      visible: true,  // shown on screen
+      dragging: false
+    };
+    setupDrag(card, i);
+    cards.push(card);
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// PHYSICS LOOP — runs every frame via rAF
+// Handles: drift, wall bounce, centre-zone avoidance, card-card collision
+// ═══════════════════════════════════════════════════════════════════════════════
+function physicsLoop() {
+  if (!paused) {
+    const z = getCentreZone();
+    const active = cards.filter(c => c.active && !c.dragging);
+
+    // 1. Integrate velocity → position
+    active.forEach(c => {
+      c.vx *= DAMPING;
+      c.vy *= DAMPING;
+
+      // Enforce minimum speed so cards never stop
+      const sp = Math.sqrt(c.vx*c.vx + c.vy*c.vy);
+      if (sp < SPEED_MIN) {
+        const s = SPEED_MIN / (sp || 1);
+        c.vx *= s; c.vy *= s;
+      }
+      // Cap max speed
+      if (sp > SPEED_MAX * 3) {
+        const s = (SPEED_MAX * 3) / sp;
+        c.vx *= s; c.vy *= s;
+      }
+
+      c.x += c.vx;
+      c.y += c.vy;
+
+      // Wall bounce
+      const maxX = window.innerWidth  - c.w;
+      const maxY = window.innerHeight - c.h;
+      if (c.x <= 0)    { c.x = 0;    c.vx =  Math.abs(c.vx); }
+      if (c.x >= maxX) { c.x = maxX; c.vx = -Math.abs(c.vx); }
+      if (c.y <= NAV_H){ c.y = NAV_H; c.vy = Math.abs(c.vy); }
+      if (c.y >= maxY) { c.y = maxY;  c.vy = -Math.abs(c.vy); }
+
+      // Centre zone avoidance
+      pushAwayFromZone(c, z);
+    });
+
+    // 2. Card–card separation (soft AABB push — no jitter)
+    for (let i = 0; i < active.length; i++) {
+      for (let j = i+1; j < active.length; j++) {
+        const a = active[i], b = active[j];
+        // AABB overlap?
+        const overlapX = Math.min(a.x+a.w, b.x+b.w) - Math.max(a.x, b.x);
+        const overlapY = Math.min(a.y+a.h, b.y+b.h) - Math.max(a.y, b.y);
+        if (overlapX > 0 && overlapY > 0) {
+          // Find the shallowest axis
+          if (overlapX < overlapY) {
+            // Separate on X, swap X velocities (elastic bounce)
+            const half = overlapX / 2;
+            const dirX = a.x < b.x ? -1 : 1;
+            a.x += dirX * half;  b.x -= dirX * half;
+            const tmp = a.vx;
+            a.vx = b.vx * 0.8;
+            b.vx = tmp  * 0.8;
+          } else {
+            const half = overlapY / 2;
+            const dirY = a.y < b.y ? -1 : 1;
+            a.y += dirY * half;  b.y -= dirY * half;
+            const tmp = a.vy;
+            a.vy = b.vy * 0.8;
+            b.vy = tmp  * 0.8;
+          }
+        }
+      }
+    }
+
+    // 3. Apply positions — single transform write per card
+    active.forEach(c => {
+      c.el.style.transform = `translate(${c.x}px,${c.y}px)`;
+    });
+  }
+
+  requestAnimationFrame(physicsLoop);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// DRAG
+// ═══════════════════════════════════════════════════════════════════════════════
+function setupDrag(card, artIndex) {
+  const el = card.el;
+  let startX, startY, originX, originY, moved;
+
+  el.addEventListener('pointerdown', e => {
+    if (!card.visible) return;
+    e.preventDefault();
+    moved = false;
+    card.dragging = true;
+    el.classList.add('dragging');
+    startX = e.clientX; startY = e.clientY;
+    originX = card.x;   originY = card.y;
+
+    const onMove = e => {
+      const dx = e.clientX - startX;
+      const dy = e.clientY - startY;
+      if (Math.abs(dx) > 4 || Math.abs(dy) > 4) moved = true;
+      card.x = Math.min(window.innerWidth-card.w,  Math.max(0,      originX+dx));
+      card.y = Math.min(window.innerHeight-card.h, Math.max(NAV_H,  originY+dy));
+      el.style.transform = `translate(${card.x}px,${card.y}px)`;
+    };
+
+    const onUp = () => {
+      window.removeEventListener('pointermove', onMove);
+      window.removeEventListener('pointerup',   onUp);
+      card.dragging = false;
+      el.classList.remove('dragging');
+      // Give a small random kick after release
+      const angle = rand(0, Math.PI*2);
+      const speed = rand(SPEED_MIN, SPEED_MAX);
+      card.vx = Math.cos(angle) * speed;
+      card.vy = Math.sin(angle) * speed;
+      if (!moved) openLightbox(artIndex);
+    };
+
+    window.addEventListener('pointermove', onMove);
+    window.addEventListener('pointerup',   onUp);
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// FILTER
+// Fades cards in/out via opacity only — physics loop keeps running uninterrupted.
+// ═══════════════════════════════════════════════════════════════════════════════
+function applyFilter(filter) {
+  activeFilter = filter;
+
+  cards.forEach(card => {
+    const match = !filter || card.art.category === filter;
+    card.active  = match;
+    card.visible = match;
+
+    // CSS transition on opacity handles the smooth fade (set in .img-card rule)
+    card.el.style.opacity      = match ? '1' : '0';
+    card.el.style.pointerEvents = match ? 'auto' : 'none';
+  });
+
+  document.querySelectorAll('.centre-subtitle span').forEach(s => {
+    s.classList.toggle('active', s.dataset.filter === filter);
+  });
+}
+
+document.querySelectorAll('.centre-subtitle span').forEach(span => {
+  span.addEventListener('click', () => applyFilter(span.dataset.filter));
+});
+document.getElementById('archive-title').addEventListener('click', () => applyFilter(null));
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// LIGHTBOX
+// ═══════════════════════════════════════════════════════════════════════════════
+const overlay    = document.getElementById('overlay');
+const lightboxEl = document.getElementById('lightbox');
+const lbImg      = document.getElementById('lb-img');
+const lbType     = document.getElementById('lb-type');
+const lbMedium   = document.getElementById('lb-medium');
+const lbTitle    = document.getElementById('lb-title');
+const lbOrigin   = document.getElementById('lb-origin');
+
+function openLightbox(i) {
+  const art = artworks[i];
+  lbType.textContent   = art.type;
+  lbMedium.textContent = art.medium;
+  lbTitle.textContent  = art.title;
+  lbOrigin.innerHTML   = art.origin.replace(' ', '<br>');
+  lbImg.src = art.img || '';
+  overlay.classList.add('active');
+  paused = true;
+}
+function closeLightbox() {
+  overlay.classList.remove('active');
+  paused = false;
+}
+overlay.addEventListener('click', e => { if (!lightboxEl.contains(e.target)) closeLightbox(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════════════════════════
+buildCards();
+
+// Stagger cards visible, then start loop
+let delay = 0;
+cards.forEach(card => {
+  setTimeout(() => {
+    card.el.style.transition = 'opacity 0.7s ease, box-shadow 0.2s';
+    card.el.style.opacity = '1';
+  }, delay);
+  delay += 80;
+});
+
+physicsLoop();
+</script>
+</body>
+</html>
